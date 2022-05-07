@@ -1,5 +1,7 @@
 ﻿using ItemChanger;
 using ItemChanger.Internal;
+using MagicUI.Core;
+using MagicUI.Elements;
 using Modding;
 using RandomizerMod.IC;
 using RandomizerMod.RC;
@@ -12,6 +14,8 @@ namespace RandoChecksCounter
     public class RandoChecksCounter : Mod
     {
         private static RandoChecksCounter? _instance;
+        private LayoutRoot? layout;
+        private TextObject? text;
 
         internal static RandoChecksCounter Instance
         {
@@ -59,6 +63,7 @@ namespace RandoChecksCounter
 
             Events.OnEnterGame += OnEnterGame;
             RandoPlacementTag.OnRandoPlacementVisitStateChanged += OnPlacementChecked;
+            Events.OnItemChangerUnhook += OnExitGame;
 
             Log("Initialized");
         }
@@ -69,14 +74,34 @@ namespace RandoChecksCounter
             if (!obj.NoChange && PlacementScore(obj.Placement) == 0 && obj.Placement.Name != "Start")
             {
                 counter++;
+                if (text != null)
+                {
+                    text.Text = $"Locations Checked: {counter}";
+                }
             }
-            Log($"Checked {counter} locations already");
         }
 
         private void OnEnterGame()
         {
             counter = CountCheckedLocations();
-            Log($"Checked {counter} locations already");
+            layout = new LayoutRoot(true, "Live Counter");
+            text = new TextObject(layout)
+            {
+                Text = $"Locations Checked: {counter}",
+                Font = UI.TrajanNormal,
+                FontSize = 25,
+                Padding = new Padding(10),
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Bottom,
+            };
+        }
+
+        private void OnExitGame()
+        {
+            text?.Destroy();
+            layout?.Destroy();
+            text = null;
+            layout = null;
         }
     }
 }
