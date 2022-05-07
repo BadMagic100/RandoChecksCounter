@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandoChecksCounter", "RandoChecksCounter\RandoChecksCounter.csproj", "{12B020EF-3927-481C-9FFB-80B5AB8818CF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{04CC7B04-D217-4089-9089-40BE81A9C6C9}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build.yml = .github\workflows\build.yml
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12B020EF-3927-481C-9FFB-80B5AB8818CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12B020EF-3927-481C-9FFB-80B5AB8818CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12B020EF-3927-481C-9FFB-80B5AB8818CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12B020EF-3927-481C-9FFB-80B5AB8818CF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E45E4831-0475-4ADA-8A66-6997B26727C4}
+	EndGlobalSection
+EndGlobal
