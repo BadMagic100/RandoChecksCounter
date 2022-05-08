@@ -33,21 +33,20 @@ namespace RandoChecksCounter
             _instance = this;
         }
 
-        int PlacementScore(AbstractPlacement p)
+        bool IsChecked(AbstractPlacement p)
         {
             if (p.Name != LocationNames.Start)
             {
                 if (p.CheckVisitedAny(VisitState.Previewed | VisitState.ObtainedAnyItem))
                 {
-                    return 1;
+                    return true;
                 }
             }
-            return 0;
+            return false;
         }
 
-        int CountCheckedLocations() => Ref.Settings.GetPlacements().Select(PlacementScore).Sum();
+        int CountCheckedLocations() => Ref.Settings.GetPlacements().Where(IsChecked).Count();
 
-        // if you need preloads, you will need to implement GetPreloadNames and use the other signature of Initialize.
         public override void Initialize()
         {
             Log("Initializing");
@@ -62,7 +61,9 @@ namespace RandoChecksCounter
         int counter = 0;
         private void OnPlacementChecked(VisitStateChangedEventArgs e)
         {
-            if (!e.NoChange && PlacementScore(e.Placement) == 0 && e.Placement.Name != "Start")
+            // VisitStateChanged happens before any actual change occurs, so we pre-check if the location was checked already
+            // before now to avoid double-counting
+            if (!e.NoChange && !IsChecked(e.Placement) && e.Placement.Name != "Start")
             {
                 if (e.NewFlags.HasFlag(VisitState.Previewed) || e.NewFlags.HasFlag(VisitState.ObtainedAnyItem))
                 {
