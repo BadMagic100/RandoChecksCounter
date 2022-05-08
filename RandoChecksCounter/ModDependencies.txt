@@ -1,4 +1,2 @@
 ﻿ItemChanger
-Randomizer 4
-RandomizerCore
 MagicUI

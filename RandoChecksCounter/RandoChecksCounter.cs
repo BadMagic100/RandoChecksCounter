@@ -3,7 +3,6 @@ using ItemChanger.Internal;
 using MagicUI.Core;
 using MagicUI.Elements;
 using Modding;
-using RandomizerMod.IC;
 using System;
 using System.Linq;
 
@@ -54,7 +53,7 @@ namespace RandoChecksCounter
             Log("Initializing");
 
             Events.OnEnterGame += OnEnterGame;
-            RandoPlacementTag.OnRandoPlacementVisitStateChanged += OnPlacementChecked;
+            AbstractPlacement.OnVisitStateChangedGlobal += OnPlacementChecked;
             Events.OnItemChangerUnhook += OnExitGame;
 
             Log("Initialized");
