@@ -4,9 +4,7 @@ using MagicUI.Core;
 using MagicUI.Elements;
 using Modding;
 using RandomizerMod.IC;
-using RandomizerMod.RC;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace RandoChecksCounter
@@ -36,25 +34,19 @@ namespace RandoChecksCounter
             _instance = this;
         }
 
-        IEnumerable<AbstractPlacement> GetEligiblePlacements() => Ref.Settings.GetPlacements().Where(p => p.HasTag<RandoPlacementTag>());
-
         int PlacementScore(AbstractPlacement p)
         {
-            if (p.GetTag(out RandoPlacementTag t))
+            if (p.Name != LocationNames.Start)
             {
-                RandoModLocation loc = RandomizerMod.RandomizerMod.RS.Context.itemPlacements[t.ids.First()].Location;
-                if (loc.Name != "Start")
+                if (p.CheckVisitedAny(VisitState.Previewed | VisitState.ObtainedAnyItem))
                 {
-                    if (p.CheckVisitedAny(VisitState.Previewed | VisitState.ObtainedAnyItem))
-                    {
-                        return 1;
-                    }
+                    return 1;
                 }
             }
             return 0;
         }
 
-        int CountCheckedLocations() => GetEligiblePlacements().Select(PlacementScore).Sum();
+        int CountCheckedLocations() => Ref.Settings.GetPlacements().Select(PlacementScore).Sum();
 
         // if you need preloads, you will need to implement GetPreloadNames and use the other signature of Initialize.
         public override void Initialize()
@@ -69,14 +61,17 @@ namespace RandoChecksCounter
         }
 
         int counter = 0;
-        private void OnPlacementChecked(VisitStateChangedEventArgs obj)
+        private void OnPlacementChecked(VisitStateChangedEventArgs e)
         {
-            if (!obj.NoChange && PlacementScore(obj.Placement) == 0 && obj.Placement.Name != "Start")
+            if (!e.NoChange && PlacementScore(e.Placement) == 0 && e.Placement.Name != "Start")
             {
-                counter++;
-                if (text != null)
+                if (e.NewFlags.HasFlag(VisitState.Previewed) || e.NewFlags.HasFlag(VisitState.ObtainedAnyItem))
                 {
-                    text.Text = $"Locations Checked: {counter}";
+                    counter++;
+                    if (text != null)
+                    {
+                        text.Text = $"Locations Checked: {counter}";
+                    }
                 }
             }
         }
