@@ -9,7 +9,7 @@
         <Description>A Hollow Knight mod that provides a live counter of locations checked/previewed</Description>
         <Copyright>Copyright © BadMagic100 2022</Copyright>
         <Authors>BadMagic100</Authors>
-        <AssemblyVersion>0.1.*</AssemblyVersion>
+        <AssemblyVersion>1.0.*</AssemblyVersion>
         <Deterministic>false</Deterministic>
         <OutputPath>bin\$(Configuration)\</OutputPath>
         <LangVersion>latest</LangVersion>

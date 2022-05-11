@@ -12,7 +12,7 @@ namespace RandoChecksCounter
     {
         private static RandoChecksCounter? _instance;
         private LayoutRoot? layout;
-        private TextObject? text;
+        private TextFormatter<int>? text;
 
         internal static RandoChecksCounter Instance
         {
@@ -58,19 +58,17 @@ namespace RandoChecksCounter
             Log("Initialized");
         }
 
-        int counter = 0;
         private void OnPlacementChecked(VisitStateChangedEventArgs e)
         {
             // VisitStateChanged happens before any actual change occurs, so we pre-check if the location was checked already
             // before now to avoid double-counting
-            if (!e.NoChange && !IsChecked(e.Placement) && e.Placement.Name != "Start")
+            if (!e.NoChange && !IsChecked(e.Placement) && e.Placement.Name != LocationNames.Start)
             {
                 if (e.NewFlags.HasFlag(VisitState.Previewed) || e.NewFlags.HasFlag(VisitState.ObtainedAnyItem))
                 {
-                    counter++;
                     if (text != null)
                     {
-                        text.Text = $"Locations Checked: {counter}";
+                        text.Data++;
                     }
                 }
             }
@@ -78,13 +76,17 @@ namespace RandoChecksCounter
 
         private void OnEnterGame()
         {
-            counter = CountCheckedLocations();
+            int initialCounter = CountCheckedLocations();
             layout = new LayoutRoot(true, "Live Counter");
-            text = new TextObject(layout)
+
+            TextObject internalText = new(layout)
             {
-                Text = $"Locations Checked: {counter}",
                 Font = UI.TrajanNormal,
-                FontSize = 25,
+                FontSize = 25
+            };
+            text = new TextFormatter<int>(layout, initialCounter, (counter) => $"Locations Checked: {counter}")
+            {
+                Text = internalText,
                 Padding = new Padding(10),
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Bottom,
