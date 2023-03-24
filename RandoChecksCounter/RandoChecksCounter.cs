@@ -1,5 +1,6 @@
 ﻿using ItemChanger;
 using ItemChanger.Internal;
+using ItemChanger.Tags;
 using MagicUI.Core;
 using MagicUI.Elements;
 using Modding;
@@ -33,9 +34,14 @@ namespace RandoChecksCounter
             _instance = this;
         }
 
+        // rather than ignore start specifically, ignore placements weighted 0 - this is a sensible and free
+        // way to ignore remote placements in sane multiworlds.
+        // side effect - also ignores area blitz nothings. not sure if desirable (probably this is not a bad thing), may make a setting
+        bool ShouldIgnorePlacement(AbstractPlacement p) => p.GetTag(out CompletionWeightTag t) && t.Weight == 0;
+
         bool IsChecked(AbstractPlacement p)
         {
-            if (p.Name != LocationNames.Start)
+            if (!ShouldIgnorePlacement(p))
             {
                 if (p.CheckVisitedAny(VisitState.Previewed | VisitState.ObtainedAnyItem))
                 {
@@ -62,7 +68,7 @@ namespace RandoChecksCounter
         {
             // VisitStateChanged happens before any actual change occurs, so we pre-check if the location was checked already
             // before now to avoid double-counting
-            if (!e.NoChange && !IsChecked(e.Placement) && e.Placement.Name != LocationNames.Start)
+            if (!e.NoChange && !IsChecked(e.Placement) && !ShouldIgnorePlacement(e.Placement))
             {
                 if (e.NewFlags.HasFlag(VisitState.Previewed) || e.NewFlags.HasFlag(VisitState.ObtainedAnyItem))
                 {
